@@ -1,34 +1,33 @@
 import streamlit as st
-from googletrans import Translator
+from deep_translator import GoogleTranslator
 
-# Translator instance
-translator = Translator()
+# Title
+st.title("🌍 Multi-Language Translator App")
 
-# Streamlit app
-st.set_page_config(page_title="Language Translator", layout="centered")
-st.title("🌍 Language Translator App")
+# Input text
+text = st.text_area("Enter text to translate:")
 
-# User input
-text_to_translate = st.text_area("Enter text to translate:", "")
-
-# Choose target language
+# Language selection
 languages = {
-    "English": "en",
-    "French": "fr",
-    "German": "de",
-    "Spanish": "es",
-    "Chinese (Simplified)": "zh-cn",
-    "Arabic": "ar",
-    "Yoruba": "yo",
-    "Igbo": "ig",
-    "Hausa": "ha"
+    "English": "en", "French": "fr", "Spanish": "es", "German": "de", 
+    "Italian": "it", "Chinese (Simplified)": "zh-CN", "Japanese": "ja",
+    "Arabic": "ar", "Russian": "ru", "Portuguese": "pt"
 }
 
-target_lang = st.selectbox("Choose target language:", list(languages.keys()))
+source_lang = st.selectbox("Select source language:", list(languages.keys()))
+target_lang = st.selectbox("Select target language:", list(languages.keys()))
 
+# Translate button
 if st.button("Translate"):
-    if text_to_translate.strip():
-        translated = translator.translate(text_to_translate, dest=languages[target_lang])
-        st.success(f"**Translation in {target_lang}:**\n\n{translated.text}")
+    if text:
+        try:
+            translated = GoogleTranslator(
+                source=languages[source_lang], 
+                target=languages[target_lang]
+            ).translate(text)
+            
+            st.success(f"**Translated Text ({target_lang}):** {translated}")
+        except Exception as e:
+            st.error(f"Error: {e}")
     else:
-        st.warning("⚠️ Please enter some text to translate.")
+        st.warning("Please enter some text first.")
